@@ -30,7 +30,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 defined( 'WPINC' ) or die;
 
-// Pull in the plugin class and initialize
+// Pull in the plugin classes and initialize
+include( dirname( __FILE__ ) . '/classes/color-scheme.php' );
 include( dirname( __FILE__ ) . '/classes/plugin.php' );
 Admin_Color_Schemer_Plugin::get_instance();
 
