@@ -2,23 +2,27 @@
 defined( 'WPINC' ) or die;
 
 class Admin_Color_Schemer_Version_Check {
-	public static $instance;
+	private static $instance;
 
-	public function __construct() {
+	protected function __construct() {
 		self::$instance = $this;
-		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
 	}
 
 	public static function get_instance() {
+		if ( ! isset( self::$instance ) ) {
+			new self;
+		}
 		return self::$instance;
 	}
 
 	public function passes() {
-		return version_compare( get_bloginfo( 'version' ), '3.8-RC1', '>=' );
+		return version_compare( get_bloginfo( 'version' ), '3.7.9999', '>' );
 	}
 
-	public function init() {
+	public function plugins_loaded() {
 		if ( ! $this->passes() ) {
+			remove_action( 'init', array( Admin_Color_Schemer_Plugin::get_instance(), 'init' ) );
   		if ( current_user_can( 'activate_plugins' ) ) {
 				add_action( 'admin_init', array( $this, 'admin_init' ) );
 				add_action( 'admin_notices', array( $this, 'admin_notices' ) );

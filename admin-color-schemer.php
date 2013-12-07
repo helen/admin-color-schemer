@@ -30,14 +30,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 defined( 'WPINC' ) or die;
 
-// To-do initialize translations
+// Pull in the plugin class and initialize
+include( dirname( __FILE__ ) . '/classes/plugin.php' );
+Admin_Color_Schemer_Plugin::get_instance();
 
-// Initialize the version checker
+// Pull in the version checker and initialize
 include( dirname( __FILE__ ) . '/classes/version-check.php' );
-new Admin_Color_Schemer_Version_Check;
-
-// Load the plugin if the test passes
-if ( Admin_Color_Schemer_Version_Check::get_instance()->passes() ) {
-	include( dirname( __FILE__ ) . '/classes/plugin.php' );
-	new Admin_Color_Schemer_Plugin;
-}
+Admin_Color_Schemer_Version_Check::get_instance();
