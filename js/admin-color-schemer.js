@@ -1,0 +1,3 @@
+(function($){
+	$('.colorpicker').wpColorPicker();
+})(jQuery);

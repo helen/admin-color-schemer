@@ -54,10 +54,17 @@ class Admin_Color_Schemer_Plugin {
 		if ( isset( $_GET['updated'] ) ) {
 			add_action( 'admin_notices', array( $this, 'updated' ) );
 		}
+
+		add_action ( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 	}
 
 	public function updated() {
 		include( $this->base . '/templates/updated.php' );
+	}
+
+	public function admin_enqueue_scripts() {
+		wp_enqueue_script( 'admin-color-schemer', plugins_url( '/js/admin-color-schemer.js', dirname( __FILE__ ) ), array( 'wp-color-picker' ), false, true );
+		wp_enqueue_style( 'admin-color-schemer', plugins_url( '/css/admin-color-schemer.css', dirname( __FILE__ ) ), array( 'wp-color-picker' ) );
 	}
 
 	public function admin_page() {
