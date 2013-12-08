@@ -4,13 +4,15 @@ defined( 'WPINC' ) or die;
 class Admin_Color_Schemer_Scheme {
 	protected $id;
 	protected $name;
-	protected $accessors = array( 'id', 'name', 'base', 'highlight', 'notification', 'icon');
+	protected $accessors = array( 'id', 'name', 'base', 'highlight', 'notification', 'icon', 'icon_focus', 'icon_current');
 
 	// Colors
 	protected $base;
 	protected $highlight;
 	protected $notification;
 	protected $icon;
+	protected $icon_focus;
+	protected $icon_current;
 
 	public function __construct( $attr = NULL ) {
 		if ( is_array( $attr ) ) {
@@ -42,7 +44,9 @@ class Admin_Color_Schemer_Scheme {
 			case 'base':
 			case 'highlight':
 			case 'notification':
-			case 'button':
+			case 'icon':
+			case 'icon_focus':
+			case 'icon_current':
 				$value = '#' . substr( preg_replace( '@[^a-f0-9]@', '', strtolower( trim( $value ) ) ), 0, 6 );
 				break;
 		}
