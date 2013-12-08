@@ -17,7 +17,7 @@ class Admin_Color_Schemer_Version_Check {
 	}
 
 	public function passes() {
-		return version_compare( get_bloginfo( 'version' ), '3.7.9999', '>' );
+		return version_compare( get_bloginfo( 'version' ), '3.8-beta', '>' );
 	}
 
 	public function plugins_loaded() {
