@@ -4,7 +4,7 @@ defined( 'WPINC' ) or die;
 class Admin_Color_Schemer_Scheme {
 	protected $id;
 	protected $name;
-	protected $accessors = array( 'base', 'highlight', 'notification', 'button', 'id' );
+	protected $accessors = array( 'id', 'name', 'base', 'highlight', 'notification', 'button');
 
 	// Colors
 	protected $base;
@@ -43,9 +43,17 @@ class Admin_Color_Schemer_Scheme {
 			case 'highlight':
 			case 'notification':
 			case 'button':
-				$value = preg_replace( '@[^a-f0-9]@', '', strtolower( substr( trim( $value ), 0, 6 ) ) );
+				$value = '#' . substr( preg_replace( '@[^a-f0-9]@', '', strtolower( trim( $value ) ) ), 0, 6 );
 				break;
 		}
 		return $value;
+	}
+
+	public function to_array() {
+		$return = array();
+		foreach ( $this->accessors as $thing ) {
+			$return[$thing] = $this->{$thing};
+		}
+		return $return;
 	}
 }
