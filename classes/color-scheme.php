@@ -4,13 +4,13 @@ defined( 'WPINC' ) or die;
 class Admin_Color_Schemer_Scheme {
 	protected $id;
 	protected $name;
-	protected $accessors = array( 'id', 'name', 'base', 'highlight', 'notification', 'button');
+	protected $accessors = array( 'id', 'name', 'base', 'highlight', 'notification', 'icon');
 
 	// Colors
 	protected $base;
 	protected $highlight;
 	protected $notification;
-	protected $button;
+	protected $icon;
 
 	public function __construct( $attr = NULL ) {
 		if ( is_array( $attr ) ) {
