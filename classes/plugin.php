@@ -108,9 +108,83 @@ class Admin_Color_Schemer_Plugin {
 		check_admin_referer( self::NONCE );
 		$_post = stripslashes_deep( $_POST );
 		$scheme = $this->get_color_scheme();
-		foreach ( array( 'base', 'highlight', 'notification', 'button' ) as $thing ) {
-			$scheme->{$thing} = $_post[$thing];
+
+		// @todo: which, if any, of these are required?
+		foreach ( array( 'base', 'highlight', 'notification', 'icon' ) as $thing ) {
+			if ( isset( $_post[ $thing ] ) ) {
+				$scheme->{$thing} = $_post[ $thing ];
+			}
 		}
+
+		// okay, let's see about getting credentials
+		if ( false === ( $creds = request_filesystem_credentials( $this->admin_url() ) ) ) {
+			return true;
+		}
+
+		// now we have some credentials, try to get the wp_filesystem running
+		if ( ! WP_Filesystem( $creds ) ) {
+			// our credentials were no good, ask the user for them again
+			request_filesystem_credentials( $this->admin_url(), '', true );
+			return true;
+		}
+
+		global $wp_filesystem;
+
+		$upload_dir = wp_upload_dir()['basedir'] . '/admin-color-schemer';
+		$upload_url = wp_upload_dir()['baseurl'] . '/admin-color-schemer';
+
+		// @todo: save into another subdirectory for multiple scheme handling
+		$scss_file = $upload_dir . '/scheme.scss';
+
+		// @todo: error handling if this can't be made - needs to be differentiated from already there
+		$wp_filesystem->mkdir( $upload_dir );
+
+		// pull in core's scss files if they're not there already
+		$core_scss = array( '_admin.scss', '_mixins.scss', '_variables.scss' );
+		$admin_dir = ABSPATH . '/wp-admin/css/colors/';
+
+		foreach ( $core_scss as $file ) {
+			if ( ! file_exists( $upload_dir . "/{$file}" ) ) {
+				if ( ! $wp_filesystem->put_contents( $upload_dir . "/{$file}", $wp_filesystem->get_contents( $admin_dir . $file, FS_CHMOD_FILE) ) ) {
+					// @todo: error that the scheme couldn't be written and redirect
+					exit( "Could not copy the core file {$file}." );
+				}
+			}
+		}
+
+		$scss = '';
+
+		foreach( array( 'base', 'icon', 'highlight', 'notification' ) as $key ) {
+			if ( '' !== $scheme->$key ) {
+				$scss .= "\${$key}-color: {$scheme->$key};\n";
+			}
+		}
+
+		$scss .= "\n\$form-checked: {$scheme->base};";
+
+		$scss .= "\n\n@import '_admin.scss';\n";
+
+		// write the custom.scss file
+		if ( ! $wp_filesystem->put_contents( $scss_file, $scss, FS_CHMOD_FILE) ) {
+			// @todo: error that the scheme couldn't be written and redirect
+			exit( 'Could not write custom SCSS file.' );
+		}
+
+		// Compile and write!
+		require_once( $this->base . '/lib/phpsass/SassParser.php' );
+		$sass = new SassParser();
+		$css = $sass->toCss( $scss_file );
+
+		$css_file = $upload_dir . '/scheme.css';
+
+		if ( ! $wp_filesystem->put_contents( $css_file, $css, FS_CHMOD_FILE) ) {
+			// @todo: error that the compiled scheme couldn't be written and redirect
+			exit( 'Could not write compiled CSS file.' );
+		}
+
+		// add the URI of the sheet to the settings array
+		$scheme->uri = esc_url_raw( $upload_url . '/scheme.css' );
+
 		$this->set_option( 'schemes', array( $scheme->id => $scheme->to_array() ) );
 		wp_redirect( $this->admin_url() . '&updated=true' );
 		exit;

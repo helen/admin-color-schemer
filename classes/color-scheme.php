@@ -4,15 +4,15 @@ defined( 'WPINC' ) or die;
 class Admin_Color_Schemer_Scheme {
 	protected $id;
 	protected $name;
-	protected $accessors = array( 'id', 'name', 'base', 'highlight', 'notification', 'icon', 'icon_focus', 'icon_current');
+	protected $accessors = array( 'id', 'name', 'uri', 'base', 'highlight', 'notification', 'icon', 'icon_focus', 'icon_current' );
 
-	// Colors
+	// Colors - might need some more defaults and a way of handling them on save
 	protected $base;
 	protected $highlight;
 	protected $notification;
 	protected $icon;
-	protected $icon_focus;
-	protected $icon_current;
+	protected $icon_focus = '#fff';
+	protected $icon_current = '#fff';
 
 	public function __construct( $attr = NULL ) {
 		if ( is_array( $attr ) ) {
@@ -47,7 +47,10 @@ class Admin_Color_Schemer_Scheme {
 			case 'icon':
 			case 'icon_focus':
 			case 'icon_current':
-				$value = '#' . substr( preg_replace( '@[^a-f0-9]@', '', strtolower( trim( $value ) ) ), 0, 6 );
+				// regex copied from core's sanitize_hex_value()
+				if ( ! preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $value ) ) {
+					$value = '';
+				}
 				break;
 		}
 		return $value;
