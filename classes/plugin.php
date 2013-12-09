@@ -11,6 +11,7 @@ class Admin_Color_Schemer_Plugin {
 		self::$instance = $this;
 		$this->base = dirname( dirname( __FILE__ ) );
 		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
 	}
 
 	public static function get_instance() {
@@ -42,6 +43,20 @@ class Admin_Color_Schemer_Plugin {
 				) );
 				$this->set_option( 'schemes', array( $scheme->id => $scheme->to_array() ) );
 			}
+		}
+	}
+
+	public function admin_init() {
+		$schemes = $this->get_option( 'schemes', array() );
+
+		foreach ( $schemes as $scheme ) {
+			wp_admin_css_color(
+				'admin_color_schemer_' . $scheme['id'],
+				$scheme['name'],
+				esc_url( $scheme['uri'] ),
+				array( $scheme['base'], $scheme['icon'], $scheme['highlight'], $scheme['notification'] ),
+				array( 'base' => $scheme['icon'], 'focus' => $scheme['icon_focus'], 'current' => $scheme['icon_current'] )
+			);
 		}
 	}
 
@@ -139,16 +154,23 @@ class Admin_Color_Schemer_Plugin {
 		// @todo: error handling if this can't be made - needs to be differentiated from already there
 		$wp_filesystem->mkdir( $upload_dir );
 
-		// pull in core's scss files if they're not there already
+		// pull in core's default colors.css and scss files if they're not there already
 		$core_scss = array( '_admin.scss', '_mixins.scss', '_variables.scss' );
-		$admin_dir = ABSPATH . '/wp-admin/css/colors/';
+		$admin_dir = ABSPATH . '/wp-admin/css/';
 
 		foreach ( $core_scss as $file ) {
 			if ( ! file_exists( $upload_dir . "/{$file}" ) ) {
-				if ( ! $wp_filesystem->put_contents( $upload_dir . "/{$file}", $wp_filesystem->get_contents( $admin_dir . $file, FS_CHMOD_FILE) ) ) {
+				if ( ! $wp_filesystem->put_contents( $upload_dir . "/{$file}", $wp_filesystem->get_contents( $admin_dir . 'colors/' . $file, FS_CHMOD_FILE) ) ) {
 					// @todo: error that the scheme couldn't be written and redirect
 					exit( "Could not copy the core file {$file}." );
 				}
+			}
+		}
+
+		if ( ! file_exists( $upload_dir . "/colors.css" ) ) {
+			if ( ! $wp_filesystem->put_contents( $upload_dir . "/colors.css", $wp_filesystem->get_contents( $admin_dir . 'colors.css', FS_CHMOD_FILE) ) ) {
+				// @todo: error that the scheme couldn't be written and redirect
+				exit( "Could not copy the core file colors.css." );
 			}
 		}
 
@@ -162,7 +184,7 @@ class Admin_Color_Schemer_Plugin {
 
 		$scss .= "\n\$form-checked: {$scheme->base};";
 
-		$scss .= "\n\n@import '_admin.scss';\n";
+		$scss .= "\n\n@import 'colors.css';\n@import '_admin.scss';\n";
 
 		// write the custom.scss file
 		if ( ! $wp_filesystem->put_contents( $scss_file, $scss, FS_CHMOD_FILE) ) {
