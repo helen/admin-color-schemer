@@ -205,7 +205,7 @@ class Admin_Color_Schemer_Plugin {
 		}
 
 		// add the URI of the sheet to the settings array
-		$scheme->uri = esc_url_raw( $upload_url . '/scheme.css' );
+		$scheme->uri = $upload_url . '/scheme.css';
 
 		$this->set_option( 'schemes', array( $scheme->id => $scheme->to_array() ) );
 		wp_redirect( $this->admin_url() . '&updated=true' );

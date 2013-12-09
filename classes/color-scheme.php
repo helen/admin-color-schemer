@@ -41,6 +41,12 @@ class Admin_Color_Schemer_Scheme {
 			case 'id':
 				$value = absint( $value );
 				break;
+			case 'name':
+				$value = esc_html( $value );
+				break;
+			case 'uri':
+				$value = esc_url( $value );
+				break;
 			case 'base':
 			case 'highlight':
 			case 'notification':
