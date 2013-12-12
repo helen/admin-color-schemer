@@ -145,8 +145,9 @@ class Admin_Color_Schemer_Plugin {
 
 		global $wp_filesystem;
 
-		$upload_dir = wp_upload_dir()['basedir'] . '/admin-color-schemer';
-		$upload_url = wp_upload_dir()['baseurl'] . '/admin-color-schemer';
+		$wp_upload_dir = wp_upload_dir();
+		$upload_dir = $wp_upload_dir['basedir'] . '/admin-color-schemer';
+		$upload_url = $wp_upload_dir['baseurl'] . '/admin-color-schemer';
 
 		// @todo: save into another subdirectory for multiple scheme handling
 		$scss_file = $upload_dir . '/scheme.scss';
