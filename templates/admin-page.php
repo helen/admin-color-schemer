@@ -9,12 +9,8 @@ defined( 'WPINC' ) or die;
 		<?php wp_nonce_field( self::NONCE ); ?>
 		<table class="form-table">
 			<?php
-			$loops = array(
-				'base' => __( 'Base', 'admin-color-schemer' ),
-				'icon' => __( 'Icon', 'admin-color-schemer' ),
-				'highlight' => __( 'Highlight', 'admin-color-schemer' ),
-				'notification' => __( 'Notification', 'admin-color-schemer' ),
-			);
+			$admin_schemer = Admin_Color_Schemer_Plugin::get_instance();
+			$loops = $admin_schemer->get_colors( 'basic' );
 			foreach ( $loops as $handle => $nicename ): ?>
 
 			<tr valign="top">
@@ -25,6 +21,27 @@ defined( 'WPINC' ) or die;
 			<?php endforeach; ?>
 
 		</table>
-		<?php submit_button(); ?>
+
+		<table class="form-table schemer-advanced hide-if-js">
+			<?php
+			$admin_schemer = Admin_Color_Schemer_Plugin::get_instance();
+			$loops = $admin_schemer->get_colors( 'advanced' );
+			foreach ( $loops as $handle => $nicename ): ?>
+
+			<tr valign="top">
+				<th scope="row"><label for="color-<?php echo $handle; ?>"><?php echo esc_html( $nicename ); ?></label></th>
+				<td><input name="<?php echo $handle; ?>" type="text" id="color-<?php echo $handle; ?>" value="<?php echo esc_attr( $scheme->{$handle} ); ?>" class="colorpicker" /></td>
+			</tr>
+
+			<?php endforeach; ?>
+
+		</table>
+
+		<p class="show-advanced"><a href="#" class="hide-if-no-js">Show advanced options</a></p>
+
+		<p>
+			<?php submit_button( __('Save and Use', 'admin-color-schemer' ), 'primary', 'submit', false ); ?>
+			<?php submit_button( __( 'Preview', 'admin-color-schemer' ), 'secondary preview-scheme', 'preview', false ); ?>
+		</p>
 	</form>
 </div>

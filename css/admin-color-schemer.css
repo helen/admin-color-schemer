@@ -1,5 +1,13 @@
 .color-schemer-pickers {
 	margin-top: 1em;
 	padding: 0 1.5em;
-	background: #fff !important; /* this is important so a user can't set foreground and background to be the same and essentially lock themselves out */
+	background: #fff !important; /* this is important so a user can't set foreground and background to be the same and essentially lock themselves out - unclear if this good enough or even necessary right now, but just in case. */
+}
+
+.show-advanced {
+	margin-bottom: 2em;
+}
+
+.schemer-advanced {
+	margin-top: 0;
 }

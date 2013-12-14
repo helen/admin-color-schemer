@@ -7,6 +7,8 @@ class Admin_Color_Schemer_Plugin {
 	const OPTION = 'admin-color-schemer';
 	const NONCE = 'admin-color-schemer_save';
 
+	private $colors;
+
 	protected function __construct() {
 		self::$instance = $this;
 		$this->base = dirname( dirname( __FILE__ ) );
@@ -25,25 +27,50 @@ class Admin_Color_Schemer_Plugin {
 		// Initialize translations
 		load_plugin_textdomain( 'admin-color-schemer', false, basename( dirname( dirname( __FILE__ ) ) ) . '/languages' );
 
+		// Set up color arrays - need translations
+		$this->colors['basic'] = array(
+			'base_color' => __( 'Base', 'admin-color-schemer' ),
+			'icon_color' => __( 'Icon', 'admin-color-schemer' ),
+			'highlight_color' => __( 'Highlight', 'admin-color-schemer' ),
+			'notification_color' => __( 'Notification', 'admin-color-schemer' ),
+		);
+
+		$this->colors['advanced'] = array(
+			'button_color' => __( 'Button', 'admin-color-schemer' ),
+			'text_color' => __( 'Text (over Base)', 'admin-color-schemer' ),
+			'body_background' => __( 'Body background', 'admin-color-schemer' ),
+			'link' => __( 'Link', 'admin-color-schemer' ),
+			'link_focus' => __( 'Link interaction', 'admin-color-schemer' ),
+			'form_checked' => __( 'Checked form controls', 'admin-color-schemer' ),
+			'menu_background' => __( 'Menu background', 'admin-color-schemer' ),
+			'menu_text' => __( 'Menu text', 'admin-color-schemer' ),
+			'menu_icon' => __( 'Menu icon', 'admin-color-schemer' ),
+			'menu_highlight_background' => __( 'Menu highlight background', 'admin-color-schemer' ),
+			'menu_highlight_text' => __( 'Menu highlight text', 'admin-color-schemer' ),
+			'menu_highlight_icon' => __( 'Menu highlight icon', 'admin-color-schemer' ),
+			'menu_current_background' => __( 'Menu current background', 'admin-color-schemer' ),
+			'menu_current_text' => __( 'Menu current text', 'admin-color-schemer' ),
+			'menu_current_icon' => __( 'Menu current icon', 'admin-color-schemer' ),
+			'menu_submenu_background' => __( 'Submenu background', 'admin-color-schemer' ),
+			'menu_submenu_text' => __( 'Submenu text', 'admin-color-schemer' ),
+			'menu_submenu_background_alt' => __( 'Submenu alt background', 'admin-color-schemer' ),
+			'menu_submenu_focus_text' => __( 'Submenu text interaction', 'admin-color-schemer' ),
+			'menu_submenu_current_text' => __( 'Submenu current text', 'admin-color-schemer' ),
+			'menu_bubble_background' => __( 'Bubble background', 'admin-color-schemer' ),
+			'menu_bubble_text' => __( 'Bubble text', 'admin-color-schemer' ),
+			'menu_bubble_current_background' => __( 'Bubble current background', 'admin-color-schemer' ),
+			'menu_bubble_current_text' => __( 'Bubble current text', 'admin-color-schemer' ),
+			'menu_collapse_text' => __( 'Menu collapse text', 'admin-color-schemer' ),
+			'menu_collapse_icon' => __( 'Menu collapse icon', 'admin-color-schemer' ),
+			'menu_collapse_focus_text' => __( 'Menu collapse text interaction', 'admin-color-schemer' ),
+			'menu_collapse_focus_icon' => __( 'Menu collapse icon interaction', 'admin-color-schemer' ),
+			'adminbar_avatar_frame' => __( 'Toolbar avatar frame', 'admin-color-schemer' ),
+			'adminbar_input_background' => __( 'Toolbar input background', 'admin-color-schemer' ),
+		);
+
 		// Hooks
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_post_admin-color-schemer-save', array( $this, 'save' ) );
-
-		// Temporary creation of a default scheme
-		if ( is_admin() ) {
-			if ( ! $this->get_color_scheme() ) {
-				// Create one
-				$scheme = new Admin_Color_Schemer_Scheme( array(
-					'id' => 1,
-					'name' => __( 'Test', 'admin-color-schemer' ),
-					'base' => '#25282b',
-					'highlight' => '#363b3f',
-					'notification' => '#69a8bb',
-					'button' => '#e14d43',
-				) );
-				$this->set_option( 'schemes', array( $scheme->id => $scheme->to_array() ) );
-			}
-		}
 	}
 
 	public function admin_init() {
@@ -51,11 +78,11 @@ class Admin_Color_Schemer_Plugin {
 
 		foreach ( $schemes as $scheme ) {
 			wp_admin_css_color(
-				'admin_color_schemer_' . $scheme['id'],
+				$scheme['slug'],
 				$scheme['name'],
 				esc_url( $scheme['uri'] ),
-				array( $scheme['base'], $scheme['icon'], $scheme['highlight'], $scheme['notification'] ),
-				array( 'base' => $scheme['icon'], 'focus' => $scheme['icon_focus'], 'current' => $scheme['icon_current'] )
+				array( $scheme['base_color'], $scheme['icon_color'], $scheme['highlight_color'], $scheme['notification_color'] ),
+				array( 'base' => $scheme['icon_color'], 'focus' => $scheme['icon_focus'], 'current' => $scheme['icon_current'] )
 			);
 		}
 	}
@@ -68,6 +95,8 @@ class Admin_Color_Schemer_Plugin {
 	public function load() {
 		if ( isset( $_GET['updated'] ) ) {
 			add_action( 'admin_notices', array( $this, 'updated' ) );
+		} elseif ( isset( $_GET['empty_scheme'] ) ) {
+			add_action( 'admin_notices', array( $this, 'empty_scheme' ) );
 		}
 
 		add_action ( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
@@ -75,6 +104,10 @@ class Admin_Color_Schemer_Plugin {
 
 	public function updated() {
 		include( $this->base . '/templates/updated.php' );
+	}
+
+	public function empty_scheme() {
+		include( $this->base . '/templates/empty-scheme.php' );
 	}
 
 	public function admin_enqueue_scripts() {
@@ -104,13 +137,45 @@ class Admin_Color_Schemer_Plugin {
 	}
 
 	protected function get_color_scheme( $id = null ) {
-		// ignoring $id right now during development
-		$schemes = $this->get_option( 'schemes', array() );
-		$scheme = array_shift( $schemes );
+		$scheme = null;
+
+		// special handling for preview
+		if ( 'preview' === $id ) {
+			$preview_defaults = array(
+				'name' => 'preview',
+			);
+
+			$scheme = $this->get_option( 'preview', $preview_defaults );
+		} else {
+			// otherwise ignoring $id right now during development
+			$schemes = $this->get_option( 'schemes', array() );
+			$scheme = array_shift( $schemes );
+		}
+
 		if ( $scheme ) {
 			return new Admin_Color_Schemer_Scheme( $scheme );
 		} else {
-			return false;
+			return new Admin_Color_Schemer_Scheme();
+		}
+	}
+
+	public function get_colors( $set = null ) {
+		if ( 'basic' === $set ) {
+			return $this->colors['basic'];
+		} elseif ( 'advanced' === $set ) {
+			return $this->colors['advanced'];
+		} elseif( 'keys' === $set ) {
+			// special handling for dashes to underscores, because PHP
+			$keys = array_keys( $this->get_colors() );
+			$scss_keys = array();
+			foreach ( $keys as $key ) {
+				$scss_keys[] = str_replace( '-', '_', $key );
+			}
+
+			// the naming of keys is kind of backward here
+			return array_combine( $keys, $scss_keys );
+		} else {
+			return array_merge( $this->colors['basic'], $this->colors['advanced'] );
 		}
 	}
 
@@ -122,14 +187,39 @@ class Admin_Color_Schemer_Plugin {
 		current_user_can( 'manage_options' ) || die;
 		check_admin_referer( self::NONCE );
 		$_post = stripslashes_deep( $_POST );
-		$scheme = $this->get_color_scheme();
+
+		if ( isset( $_post['preview'] ) ) {
+			$scheme = $this->get_color_scheme( 'preview' );
+		} else {
+			$scheme = $this->get_color_scheme();
+		}
+
+		$colors = $this->get_colors( 'keys' );
 
 		// @todo: which, if any, of these are required?
-		foreach ( array( 'base', 'highlight', 'notification', 'icon' ) as $thing ) {
-			if ( isset( $_post[ $thing ] ) ) {
-				$scheme->{$thing} = $_post[ $thing ];
+		foreach ( $colors as $key => $scss_key ) {
+			// really, these are always set, but always check, too!
+			if ( isset( $_post[ $key ] ) ) {
+				$scheme->{$key} = $_post[ $key ];
 			}
 		}
+
+		$scss = '';
+
+		foreach( $colors as $key => $scss_key ) {
+			if ( ! empty( $scheme->{$key} ) ) {
+				$scss .= "\${$scss_key}: {$scheme->$key};\n";
+			}
+		}
+
+		if ( empty( $scss ) ) {
+			// reset color scheme object and bail if this gets emptied out
+			$scheme = $this->get_color_scheme();
+			wp_redirect( $this->admin_url() . '&empty_scheme=true' );
+			exit;
+		}
+
+		$scss .= "\n\n@import 'colors.css';\n@import '_admin.scss';\n";
 
 		// okay, let's see about getting credentials
 		if ( false === ( $creds = request_filesystem_credentials( $this->admin_url() ) ) ) {
@@ -155,37 +245,7 @@ class Admin_Color_Schemer_Plugin {
 		// @todo: error handling if this can't be made - needs to be differentiated from already there
 		$wp_filesystem->mkdir( $upload_dir );
 
-		// pull in core's default colors.css and scss files if they're not there already
-		$core_scss = array( '_admin.scss', '_mixins.scss', '_variables.scss' );
-		$admin_dir = ABSPATH . '/wp-admin/css/';
-
-		foreach ( $core_scss as $file ) {
-			if ( ! file_exists( $upload_dir . "/{$file}" ) ) {
-				if ( ! $wp_filesystem->put_contents( $upload_dir . "/{$file}", $wp_filesystem->get_contents( $admin_dir . 'colors/' . $file, FS_CHMOD_FILE) ) ) {
-					// @todo: error that the scheme couldn't be written and redirect
-					exit( "Could not copy the core file {$file}." );
-				}
-			}
-		}
-
-		if ( ! file_exists( $upload_dir . "/colors.css" ) ) {
-			if ( ! $wp_filesystem->put_contents( $upload_dir . "/colors.css", $wp_filesystem->get_contents( $admin_dir . 'colors.css', FS_CHMOD_FILE) ) ) {
-				// @todo: error that the scheme couldn't be written and redirect
-				exit( "Could not copy the core file colors.css." );
-			}
-		}
-
-		$scss = '';
-
-		foreach( array( 'base', 'icon', 'highlight', 'notification' ) as $key ) {
-			if ( '' !== $scheme->$key ) {
-				$scss .= "\${$key}-color: {$scheme->$key};\n";
-			}
-		}
-
-		$scss .= "\n\$form-checked: {$scheme->base};";
-
-		$scss .= "\n\n@import 'colors.css';\n@import '_admin.scss';\n";
+		$this->maybe_copy_core_files( $upload_dir );
 
 		// write the custom.scss file
 		if ( ! $wp_filesystem->put_contents( $scss_file, $scss, FS_CHMOD_FILE) ) {
@@ -209,7 +269,35 @@ class Admin_Color_Schemer_Plugin {
 		$scheme->uri = $upload_url . '/scheme.css';
 
 		$this->set_option( 'schemes', array( $scheme->id => $scheme->to_array() ) );
+
+		// switch to the scheme
+		update_user_meta( get_current_user_id(), 'admin_color', $scheme->slug );
+
 		wp_redirect( $this->admin_url() . '&updated=true' );
 		exit;
+	}
+
+	public function maybe_copy_core_files( $upload_dir ) {
+		global $wp_filesystem;
+
+		// pull in core's default colors.css and scss files if they're not there already
+		$core_scss = array( '_admin.scss', '_mixins.scss', '_variables.scss' );
+		$admin_dir = ABSPATH . '/wp-admin/css/';
+
+		foreach ( $core_scss as $file ) {
+			if ( ! file_exists( $upload_dir . "/{$file}" ) ) {
+				if ( ! $wp_filesystem->put_contents( $upload_dir . "/{$file}", $wp_filesystem->get_contents( $admin_dir . 'colors/' . $file, FS_CHMOD_FILE) ) ) {
+					// @todo: error that the scheme couldn't be written and redirect
+					exit( "Could not copy the core file {$file}." );
+				}
+			}
+		}
+
+		if ( ! file_exists( $upload_dir . "/colors.css" ) ) {
+			if ( ! $wp_filesystem->put_contents( $upload_dir . "/colors.css", $wp_filesystem->get_contents( $admin_dir . 'colors.css', FS_CHMOD_FILE) ) ) {
+				// @todo: error that the scheme couldn't be written and redirect
+				exit( "Could not copy the core file colors.css." );
+			}
+		}
 	}
 }
