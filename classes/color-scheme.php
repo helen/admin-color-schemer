@@ -59,18 +59,16 @@ class Admin_Color_Schemer_Scheme {
 			case 'id':
 				$value = absint( $value );
 				break;
+			case 'slug':
+				$value = sanitize_key( $value );
 			case 'name':
 				$value = esc_html( $value );
 				break;
 			case 'uri':
 				$value = esc_url_raw( $value );
 				break;
-			case 'base':
-			case 'highlight':
-			case 'notification':
-			case 'icon':
-			case 'icon_focus':
-			case 'icon_current':
+			default:
+				// everything else should be a hex value
 				// regex copied from core's sanitize_hex_value()
 				if ( ! preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $value ) ) {
 					$value = '';
