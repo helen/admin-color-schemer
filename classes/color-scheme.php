@@ -2,6 +2,7 @@
 defined( 'WPINC' ) or die;
 
 class Admin_Color_Schemer_Scheme {
+	// possibly-temporary default
 	protected $id = 1;
 	protected $slug;
 	protected $name;
@@ -13,7 +14,7 @@ class Admin_Color_Schemer_Scheme {
 	protected $icon_current = '#fff';
 
 	public function __construct( $attr = NULL ) {
-		// set accessors
+		// extend accessors
 		$admin_schemer = Admin_Color_Schemer_Plugin::get_instance();
 		$this->accessors = array_merge( $this->accessors, array_keys( $admin_schemer->get_colors() ) );
 
