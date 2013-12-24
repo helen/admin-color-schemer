@@ -10,6 +10,7 @@ class Admin_Color_Schemer_Scheme {
 	protected $accessors = array( 'id', 'slug', 'name', 'uri', 'icon_focus', 'icon_current' );
 
 	// Icon colors for SVG painter - likely temporary placement, as it will need some more special handling
+	protected $icon_color = '#fff';
 	protected $icon_focus = '#fff';
 	protected $icon_current = '#fff';
 
