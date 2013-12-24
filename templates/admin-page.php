@@ -41,7 +41,7 @@ defined( 'WPINC' ) or die;
 
 		<p>
 			<?php submit_button( __('Save and Use', 'admin-color-schemer' ), 'primary', 'submit', false ); ?>
-			<?php submit_button( __( 'Preview', 'admin-color-schemer' ), 'secondary preview-scheme', 'preview', false ); ?>
+			<?php submit_button( __( 'Preview', 'admin-color-schemer' ), 'secondary preview-scheme hide-if-no-js', 'preview', false ); ?>
 		</p>
 	</form>
 </div>
