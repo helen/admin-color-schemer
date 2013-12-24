@@ -3,7 +3,7 @@
 Plugin Name: Admin Color Schemer
 Plugin URI: http://wordpress.org/plugins/admin-color-schemer/
 Description: Create your own admin color schemes, right in the WordPress admin.
-Version: 0.1
+Version: 1.0
 Author: WordPress Core Team
 Author URI: http://wordpress.org/
 Text Domain: admin-color-schemer

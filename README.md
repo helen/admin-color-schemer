@@ -11,6 +11,10 @@ Create your own admin color scheme, right in the WordPress admin.
 
 Create your own admin color scheme, right in the WordPress admin. Go simple with the four basic colors, or get into the details and customize to your heart's content.
 
+### Contributing ###
+
+Pull requests and issues on [GitHub](https://github.com/helenhousandi/admin-color-schemer) welcome.
+
 ## Installation ##
 
 Admin Color Schemer is most easily installed automatically via the Plugins tab in your dashboard. Your uploads folder also needs to be writeable in order to save the scheme.
@@ -33,7 +37,3 @@ This means that your uploads folder requires credentials in order to save the th
 
 ### 1.0 ###
 * Initial release
-
-## Contributing ##
-
-Pull requests and issues on [GitHub](https://github.com/helenhousandi/admin-color-schemer) welcome.
