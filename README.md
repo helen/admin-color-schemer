@@ -5,11 +5,11 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html  
 Stable tag: trunk  
 
-Create your own admin color scheme, right in the WordPress admin.
+Create your own admin color scheme, right in the WordPress admin under the Tools menu.
 
 ## Description ##
 
-Create your own admin color scheme, right in the WordPress admin. Go simple with the four basic colors, or get into the details and customize to your heart's content.
+Create your own admin color scheme, right in the WordPress admin under the Tools menu. Go simple with the four basic colors, or get into the details and customize to your heart's content.
 
 ### Contributing ###
 
