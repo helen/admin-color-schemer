@@ -15,7 +15,7 @@ defined( 'WPINC' ) or die;
 
 			<tr valign="top">
 				<th scope="row"><label for="color-<?php echo $handle; ?>"><?php echo esc_html( $nicename ); ?></label></th>
-				<td><input name="<?php echo $handle; ?>" type="text" id="color-<?php echo $handle; ?>" value="<?php echo esc_attr( $scheme->{$handle} ); ?>" class="colorpicker" /></td>
+				<td><input name="<?php echo $handle; ?>" type="text" id="color-<?php echo $handle; ?>" value="<?php echo esc_attr( $scheme->{$handle} ); ?>" class="colorpicker" autocomplete="off" /></td>
 			</tr>
 
 			<?php endforeach; ?>
@@ -30,7 +30,7 @@ defined( 'WPINC' ) or die;
 
 			<tr valign="top">
 				<th scope="row"><label for="color-<?php echo $handle; ?>"><?php echo esc_html( $nicename ); ?></label></th>
-				<td><input name="<?php echo $handle; ?>" type="text" id="color-<?php echo $handle; ?>" value="<?php echo esc_attr( $scheme->{$handle} ); ?>" class="colorpicker" /></td>
+				<td><input name="<?php echo $handle; ?>" type="text" id="color-<?php echo $handle; ?>" value="<?php echo esc_attr( $scheme->{$handle} ); ?>" class="colorpicker" autocomplete="off" /></td>
 			</tr>
 
 			<?php endforeach; ?>
