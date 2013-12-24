@@ -19,7 +19,7 @@ Admin Color Schemer is most easily installed automatically via the Plugins tab i
 
 ### Why do I have to click a button to preview? ###
 
-The preview currently operates by generating a complete stylesheet and reloading it. While in some environments this happens near-instantaneously, the time and resources it takes to reflect a change is not ideal for live previews. We do hope to solve this in the future.
+The preview currently operates by generating a complete stylesheet and reloading it. While in some environments this happens near-instantaneously, the time and resources it takes to reflect a change are not ideal for live previews. We do hope to solve this in a later release.
 
 ### I'm getting an ugly screen asking me for a username and password. ###
 
