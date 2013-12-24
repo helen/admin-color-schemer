@@ -71,6 +71,7 @@ class Admin_Color_Schemer_Plugin {
 		// Hooks
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_post_admin-color-schemer-save', array( $this, 'save' ) );
+		add_action( 'wp_ajax_admin-color-schemer-save', array( $this, 'save' ) );
 	}
 
 	public function admin_init() {
@@ -142,6 +143,7 @@ class Admin_Color_Schemer_Plugin {
 		// special handling for preview
 		if ( 'preview' === $id ) {
 			$preview_defaults = array(
+				'id' => 'preview',
 				'name' => 'preview',
 			);
 
@@ -187,8 +189,9 @@ class Admin_Color_Schemer_Plugin {
 		current_user_can( 'manage_options' ) || die;
 		check_admin_referer( self::NONCE );
 		$_post = stripslashes_deep( $_POST );
+		$doing_ajax = defined( 'DOING_AJAX' ) && DOING_AJAX;
 
-		if ( isset( $_post['preview'] ) ) {
+		if ( $doing_ajax ) {
 			$scheme = $this->get_color_scheme( 'preview' );
 		} else {
 			$scheme = $this->get_color_scheme();
@@ -213,7 +216,18 @@ class Admin_Color_Schemer_Plugin {
 		}
 
 		if ( empty( $scss ) ) {
-			// reset color scheme object and bail if this gets emptied out
+			// bail if this gets emptied out
+			if ( $doing_ajax ) {
+				$response = array(
+					'errors' => true,
+					'message' => __( 'Please make more selections to preview the color scheme.', 'admin-color-schemer' ),
+				);
+
+				echo json_encode( $response );
+				die();
+			}
+
+			// reset color scheme object
 			$scheme = $this->get_color_scheme();
 			wp_redirect( $this->admin_url() . '&empty_scheme=true' );
 			exit;
@@ -222,6 +236,7 @@ class Admin_Color_Schemer_Plugin {
 		$scss .= "\n\n@import 'colors.css';\n@import '_admin.scss';\n";
 
 		// okay, let's see about getting credentials
+		// @todo: what to do about preview
 		if ( false === ( $creds = request_filesystem_credentials( $this->admin_url() ) ) ) {
 			return true;
 		}
@@ -239,16 +254,36 @@ class Admin_Color_Schemer_Plugin {
 		$upload_dir = $wp_upload_dir['basedir'] . '/admin-color-schemer';
 		$upload_url = $wp_upload_dir['baseurl'] . '/admin-color-schemer';
 
-		// @todo: save into another subdirectory for multiple scheme handling
-		$scss_file = $upload_dir . '/scheme.scss';
-
 		// @todo: error handling if this can't be made - needs to be differentiated from already there
 		$wp_filesystem->mkdir( $upload_dir );
+
+		if ( $doing_ajax ) {
+			$scss_file = $upload_dir . '/preview.scss';
+			$css_file = $upload_dir . '/preview.css';
+			// use a modified query arg to avoid caching problems
+			// @todo: chances are we'll need to do this for the saved scheme as well.
+			$uri = $upload_url . '/preview.css?m=' . microtime();
+		} else {
+			// @todo: save into another subdirectory for multiple scheme handling
+			$scss_file = $upload_dir . '/scheme.scss';
+			$css_file = $upload_dir . '/scheme.css';
+			$uri = $upload_url . '/scheme.css';
+		}
 
 		$this->maybe_copy_core_files( $upload_dir );
 
 		// write the custom.scss file
 		if ( ! $wp_filesystem->put_contents( $scss_file, $scss, FS_CHMOD_FILE) ) {
+			if ( $doing_ajax ) {
+				$response = array(
+					'errors' => true,
+					'message' => __( 'Could not write custom SCSS file.', 'admin-color-schemer' ),
+				);
+
+				echo json_encode( $response );
+				die();
+			}
+
 			// @todo: error that the scheme couldn't be written and redirect
 			exit( 'Could not write custom SCSS file.' );
 		}
@@ -258,15 +293,33 @@ class Admin_Color_Schemer_Plugin {
 		$sass = new SassParser();
 		$css = $sass->toCss( $scss_file );
 
-		$css_file = $upload_dir . '/scheme.css';
-
 		if ( ! $wp_filesystem->put_contents( $css_file, $css, FS_CHMOD_FILE) ) {
+			if ( $doing_ajax ) {
+				$response = array(
+					'errors' => true,
+					'message' => __( 'Could not write compiled CSS file.', 'admin-color-schemer' ),
+				);
+
+				echo json_encode( $response );
+				die();
+			}
+
 			// @todo: error that the compiled scheme couldn't be written and redirect
 			exit( 'Could not write compiled CSS file.' );
 		}
 
 		// add the URI of the sheet to the settings array
-		$scheme->uri = $upload_url . '/scheme.css';
+		$scheme->uri = $uri;
+
+		if ( $doing_ajax ) {
+			$response = array(
+				'uri' => $scheme->uri,
+				'message' => __( 'Previewing. Be sure to save if you like the result.', 'admin-color-schemer' ),
+			);
+
+			echo json_encode( $response );
+			die();
+		}
 
 		$this->set_option( 'schemes', array( $scheme->id => $scheme->to_array() ) );
 
@@ -287,6 +340,16 @@ class Admin_Color_Schemer_Plugin {
 		foreach ( $core_scss as $file ) {
 			if ( ! file_exists( $upload_dir . "/{$file}" ) ) {
 				if ( ! $wp_filesystem->put_contents( $upload_dir . "/{$file}", $wp_filesystem->get_contents( $admin_dir . 'colors/' . $file, FS_CHMOD_FILE) ) ) {
+					if ( $doing_ajax ) {
+						$response = array(
+							'errors' => true,
+							'message' => __( 'Could not copy a core file.', 'admin-color-schemer' ),
+						);
+
+						echo json_encode( $response );
+						die();
+					}
+
 					// @todo: error that the scheme couldn't be written and redirect
 					exit( "Could not copy the core file {$file}." );
 				}
@@ -295,6 +358,16 @@ class Admin_Color_Schemer_Plugin {
 
 		if ( ! file_exists( $upload_dir . "/colors.css" ) ) {
 			if ( ! $wp_filesystem->put_contents( $upload_dir . "/colors.css", $wp_filesystem->get_contents( $admin_dir . 'colors.css', FS_CHMOD_FILE) ) ) {
+				if ( $doing_ajax ) {
+					$response = array(
+						'errors' => true,
+						'message' => __( 'Could not copy a core file.', 'admin-color-schemer' ),
+					);
+
+					echo json_encode( $response );
+					die();
+				}
+
 				// @todo: error that the scheme couldn't be written and redirect
 				exit( "Could not copy the core file colors.css." );
 			}
