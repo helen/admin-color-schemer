@@ -9,8 +9,8 @@
  * @subpackage  Sass.tree
  */
 
-require_once(dirname(__FILE__).'/../script/SassScriptParser.php');
-require_once(dirname(__FILE__).'/../renderers/SassRenderer.php');
+#require_once(dirname(__FILE__).'/../script/SassScriptParser.php');
+#require_once(dirname(__FILE__).'/../renderers/SassRenderer.php');
 
 /**
  * SassRootNode class.
@@ -42,11 +42,11 @@ class SassRootNode extends SassNode
    */
   public $extend_parent = null;
 
-  /**
-   * Root SassNode constructor.
-   * @param SassParser Sass parser
-   * @return SassNode
-   */
+	/**
+	 * Root SassNode constructor.
+	 * @param SassParser $parser Sass parser
+	 * @return SassRootNode
+	 */
   public function __construct($parser)
   {
     parent::__construct((object) array(
@@ -65,7 +65,7 @@ class SassRootNode extends SassNode
    * Parses this node and its children into the render tree.
    * Dynamic nodes are evaluated, files imported, etc.
    * Only static nodes for rendering are in the resulting tree.
-   * @param SassContext the context in which this node is parsed
+   * @param SassContext $context the context in which this node is parsed
    * @return SassNode root node of the render tree
    */
   public function parse($context)
@@ -78,6 +78,7 @@ class SassRootNode extends SassNode
 
   /**
    * Render this node.
+   * @param mixed $context
    * @return string the rendered node
    */
   public function render($context = null)
@@ -92,13 +93,20 @@ class SassRootNode extends SassNode
     return $output;
   }
 
-  public function extend($extendee, $selectors)
+	/**
+	 * @param $extendee
+	 * @param $selectors
+	 *
+	 * @return mixed|NULL
+	 */
+	public function extend($extendee, $selectors)
   {
     if ($this->extend_parent && method_exists($this->extend_parent, 'extend')) {
       return $this->extend_parent->extend($extendee, $selectors);
     }
     $this->extenders[$extendee] = (isset($this->extenders[$extendee])
       ? array_merge($this->extenders[$extendee], $selectors) : $selectors);
+	return NULL;
   }
 
   public function getExtenders()

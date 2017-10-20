@@ -9,30 +9,29 @@
  * @subpackage  Sass.tree
  */
 
-require_once 'SassContext.php';
-require_once 'SassCommentNode.php';
-require_once 'SassDebugNode.php';
-require_once 'SassDirectiveNode.php';
-require_once 'SassImportNode.php';
-require_once 'SassMixinNode.php';
-require_once 'SassMixinDefinitionNode.php';
-require_once 'SassPropertyNode.php';
-require_once 'SassRootNode.php';
-require_once 'SassRuleNode.php';
-require_once 'SassVariableNode.php';
-require_once 'SassExtendNode.php';
-require_once 'SassEachNode.php';
-require_once 'SassForNode.php';
-require_once 'SassIfNode.php';
-require_once 'SassElseNode.php';
-require_once 'SassWhileNode.php';
-require_once 'SassNodeExceptions.php';
-
-require_once 'SassFunctionDefinitionNode.php';
-require_once 'SassReturnNode.php';
-require_once 'SassContentNode.php';
-require_once 'SassWarnNode.php';
-require_once 'SassMediaNode.php';
+#require_once 'SassContext.php';
+#require_once 'SassCommentNode.php';
+#require_once 'SassDebugNode.php';
+#require_once 'SassDirectiveNode.php';
+#require_once 'SassImportNode.php';
+#require_once 'SassMixinNode.php';
+#require_once 'SassMixinDefinitionNode.php';
+#require_once 'SassPropertyNode.php';
+#require_once 'SassRootNode.php';
+#require_once 'SassRuleNode.php';
+#require_once 'SassVariableNode.php';
+#require_once 'SassExtendNode.php';
+#require_once 'SassEachNode.php';
+#require_once 'SassForNode.php';
+#require_once 'SassIfNode.php';
+#require_once 'SassElseNode.php';
+#require_once 'SassWhileNode.php';
+#require_once 'SassNodeExceptions.php';
+#require_once 'SassFunctionDefinitionNode.php';
+#require_once 'SassReturnNode.php';
+#require_once 'SassContentNode.php';
+#require_once 'SassWarnNode.php';
+#require_once 'SassMediaNode.php';
 
 /**
  * SassNode class.
@@ -61,7 +60,7 @@ class SassNode
 
   /**
    * Constructor.
-   * @param object source token
+   * @param object $token source token
    * @return SassNode
    */
   public function __construct($token)
@@ -69,11 +68,14 @@ class SassNode
     $this->token = $token;
   }
 
-  /**
-   * Getter.
-   * @param string name of property to get
-   * @return mixed return value of getter function
-   */
+	/**
+	 * Getter.
+	 *
+	 * @param string $name name of property to get
+	 *
+	 * @throws SassNodeException
+	 * @return mixed return value of getter function
+	 */
   public function __get($name)
   {
     $getter = 'get' . ucfirst($name);
@@ -85,8 +87,9 @@ class SassNode
 
   /**
    * Setter.
-   * @param string name of property to set
-   * @return mixed value of property
+   * @param string $name name of property to set
+   * @param mixed $value value of property
+   * @throws SassNodeException
    * @return SassNode this node
    */
   public function __set($name, $value)
@@ -129,26 +132,34 @@ class SassNode
 
   /**
    * Adds a child to this node.
-   * @return SassNode the child to add
    */
   public function addChild($child)
   {
+	/** @var $child SassNode */
     if ($child instanceof SassElseNode) {
-      if (!$this->lastChild instanceof SassIfNode) {
+      if (!$this->getLastChild() instanceof SassIfNode) {
         throw new SassException('@else(if) directive must come after @(else)if', $child);
       }
-      $this->lastChild->addElse($child);
+      $this->getLastChild()->addElse($child);
     } else {
       $this->children[] = $child;
       $child->parent = $this;
-      $child->root = $this->root;
-    }
-    // The child will have children if a debug node has been added
-    foreach ($child->children as $grandchild) {
-      $grandchild->root = $this->root;
+      $child->setRoot($this->root);
     }
   }
-
+  
+  /**
+   * Sets a root recursively.
+   * @param SassNode $root the new root node
+   */
+  public function setRoot($root){
+    $this->root = $root;
+    foreach ($this->children as $child) {
+	    /** @var $child SassNode */
+      $child->setRoot($this->root);
+    }
+  }
+  
   /**
    * Returns a value indicating if this node has children
    * @return boolean true if the node has children, false if not
@@ -167,15 +178,18 @@ class SassNode
     return $this->children;
   }
 
-  /**
-   * Returns a value indicating if this node is a child of the passed node.
-   * This just checks the levels of the nodes. If this node is at a greater
-   * level than the passed node if is a child of it.
-   * @return boolean true if the node is a child of the passed node, false if not
-   */
+	/**
+	 * Returns a value indicating if this node is a child of the passed node.
+	 * This just checks the levels of the nodes. If this node is at a greater
+	 * level than the passed node if is a child of it.
+	 *
+	 * @param SassNode $node
+	 *
+	 * @return boolean true if the node is a child of the passed node, false if not
+	 */
   public function isChildOf($node)
   {
-    return $this->level > $node->level;
+    return $this->getLevel() > $node->getLevel();
   }
 
   /**
@@ -211,7 +225,7 @@ class SassNode
    */
   public function getDebug_info()
   {
-    return $this->parser->debug_info;
+    return $this->getParser()->debug_info;
   }
 
   /**
@@ -229,7 +243,7 @@ class SassNode
    */
   public function getLine_numbers()
   {
-    return $this->parser->line_numbers;
+    return $this->getParser()->line_numbers;
   }
 
   /**
@@ -256,7 +270,7 @@ class SassNode
    */
   public function getPropertySyntax()
   {
-    return $this->root->parser->propertySyntax;
+    return $this->root->getParser()->propertySyntax;
   }
 
   /**
@@ -283,23 +297,29 @@ class SassNode
    */
   public function getStyle()
   {
-    return $this->root->parser->style;
+    return $this->root->getParser()->style;
   }
 
-  /**
-   * Returns a value indicating whether this node is in a directive
-   * @param boolean true if the node is in a directive, false if not
-   */
+	/**
+	 * Returns a value indicating whether this node is in a directive
+	 *
+	 * @param boolean true if the node is in a directive, false if not
+	 *
+	 * @return bool
+	 */
   public function inDirective()
   {
     return $this->parent instanceof SassDirectiveNode ||
         $this->parent instanceof SassDirectiveNode;
   }
 
-  /**
-   * Returns a value indicating whether this node is in a SassScript directive
-   * @param boolean true if this node is in a SassScript directive, false if not
-   */
+	/**
+	 * Returns a value indicating whether this node is in a SassScript directive
+	 *
+	 * @param boolean true if this node is in a SassScript directive, false if not
+	 *
+	 * @return bool
+	 */
   public function inSassScriptDirective()
   {
     return $this->parent instanceof SassEachNode ||
@@ -312,12 +332,15 @@ class SassNode
       $this->parent->parent instanceof SassWhileNode;
   }
 
-  /**
-   * Evaluates a SassScript expression.
-   * @param string expression to evaluate
-   * @param SassContext the context in which the expression is evaluated
-   * @return SassLiteral value of parsed expression
-   */
+	/**
+	 * Evaluates a SassScript expression.
+	 *
+	 * @param string      $expression expression to evaluate
+	 * @param SassContext $context    the context in which the expression is evaluated
+	 * @param mixed        $x
+	 *
+	 * @return SassLiteral value of parsed expression
+	 */
   public function evaluate($expression, $context, $x=null)
   {
     $context->node = $this;
@@ -327,21 +350,20 @@ class SassNode
 
   /**
    * Replace interpolated SassScript contained in '#{}' with the parsed value.
-   * @param string the text to interpolate
-   * @param SassContext the context in which the string is interpolated
+   * @param string $expression the text to interpolate
+   * @param SassContext $context the context in which the string is interpolated
    * @return string the interpolated text
    */
   public function interpolate($expression, $context)
   {
     $context->node = $this;
 
-    return $this->script->interpolate($expression, $context);
+    return $this->getScript()->interpolate($expression, $context);
   }
 
   /**
    * Adds a warning to the node.
-   * @param string warning message
-   * @param array line
+   * @param string $message warning message
    */
   public function addWarning($message)
   {
@@ -351,7 +373,7 @@ class SassNode
 
   /**
    * Parse the children of the node.
-   * @param SassContext the context in which the children are parsed
+   * @param SassContext $context the context in which the children are parsed
    * @return array the parsed child nodes
    */
   public function parseChildren($context)
@@ -370,11 +392,14 @@ class SassNode
     return $children;
   }
 
-  /**
-   * Returns a value indicating if the token represents this type of node.
-   * @param object token
-   * @return boolean true if the token represents this type of node, false if not
-   */
+	/**
+	 * Returns a value indicating if the token represents this type of node.
+	 *
+	 * @param object $token token
+	 *
+	 * @throws SassNodeException
+	 * @return boolean true if the token represents this type of node, false if not
+	 */
   public static function isa($token)
   {
     throw new SassNodeException('Child classes must override this method');
@@ -386,6 +411,7 @@ class SassNode
     $p = $this->getParent();
     if ($p) echo str_repeat(' ', $i*2)." parent: ".get_class($p)."\n";
     foreach ($this->getChildren() as $c) {
+	    /** @var $c SassNode */
         $c->printDebugTree($i+1);
     }
   }

@@ -1,0 +1,13 @@
+%bar {
+	color: red;
+}
+@mixin foo {
+	@extend %bar;
+}
+
+#a { 
+	@include foo;
+}
+#b { 
+	@include foo;
+}

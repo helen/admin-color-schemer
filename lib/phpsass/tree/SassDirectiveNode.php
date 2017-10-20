@@ -24,7 +24,7 @@ class SassDirectiveNode extends SassNode
 
   /**
    * SassDirectiveNode.
-   * @param object source token
+   * @param object $token source token
    * @return SassDirectiveNode
    */
   public function __construct($token)
@@ -35,25 +35,21 @@ class SassDirectiveNode extends SassNode
   protected function getDirective()
   {
     return $this->token->source;
-    preg_match('/^(@[\w-]+)(?:\s*(\w+))*/', $this->token->source, $matches);
-    array_shift($matches);
-    $parts = implode(' ', $matches);
-
-    return strtolower($parts);
   }
 
   /**
    * Parse this node.
-   * @param SassContext the context in which this node is parsed
+   * @param SassContext $context the context in which this node is parsed
    * @return array the parsed node
    */
   public function parse($context)
   {
-    $this->token->source = self::interpolate_nonstrict($this->token->source, $context);
+    $node = clone $this;
+    $node->token->source = self::interpolate_nonstrict($this->token->source, $context);
 
-    $this->children = $this->parseChildren($context);
+    $node->children = $this->parseChildren($context);
 
-    return array($this);
+    return array($node);
   }
 
   /**
@@ -71,8 +67,17 @@ class SassDirectiveNode extends SassNode
   }
 
   /**
+   * @see parse
+   */
+  public function __clone()
+  {
+    parent::__clone();
+    $this->token = clone $this->token;
+  }
+
+  /**
    * Returns a value indicating if the token represents this type of node.
-   * @param object token
+   * @param object $token token
    * @return boolean true if the token represents this type of node, false if not
    */
   public static function isa($token)
@@ -82,7 +87,7 @@ class SassDirectiveNode extends SassNode
 
   /**
    * Returns the directive
-   * @param object token
+   * @param object $token token
    * @return string the directive
    */
   public static function extractDirective($token)

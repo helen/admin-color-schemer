@@ -23,15 +23,15 @@ class SassWarnNode extends SassNode
   const STATEMENT = 3;
 
   /**
-   * @var statement to execute and return
+   * @var mixed statement to execute and return
    */
   private $statement;
 
-  /**
-   * SassReturnNode constructor.
-   * @param object source token
-   * @return SassReturnNode
-   */
+	/**
+	 * SassReturnNode constructor.
+	 * @param object $token source token
+	 * @return SassWarnNode|void
+	 */
   public function __construct($token)
   {
     parent::__construct($token);
@@ -48,7 +48,7 @@ class SassWarnNode extends SassNode
    * Parse this node.
    * Set passed arguments and any optional arguments not passed to their
    * defaults, then render the children of the return definition.
-   * @param SassContext the context in which this node is parsed
+   * @param SassContext $pcontext the context in which this node is parsed
    * @return array the parsed node
    */
   public function parse($pcontext)
@@ -73,7 +73,7 @@ class SassWarnNode extends SassNode
 
   /**
    * Returns a value indicating if the token represents this type of node.
-   * @param object token
+   * @param object $token token
    * @return boolean true if the token represents this type of node, false if not
    */
   public static function isa($token)

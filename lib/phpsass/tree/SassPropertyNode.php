@@ -80,8 +80,8 @@ class SassPropertyNode extends SassNode
 
   /**
    * SassPropertyNode constructor.
-   * @param object source token
-   * @param string property syntax
+   * @param object $token source token
+   * @param string $syntax property syntax
    * @return SassPropertyNode
    */
   public function __construct($token, $syntax = 'new')
@@ -106,7 +106,7 @@ class SassPropertyNode extends SassNode
    * Parse this node.
    * If the node is a property namespace return all parsed child nodes. If not
    * return the parsed version of this node.
-   * @param SassContext the context in which this node is parsed
+   * @param SassContext $context the context in which this node is parsed
    * @return array the parsed node
    */
   public function parse($context)
@@ -193,8 +193,7 @@ class SassPropertyNode extends SassNode
 
   /**
    * Returns a value indicating if the token represents this type of node.
-   * @param object token
-   * @param string the property syntax being used
+   * @param object $token token
    * @return boolean true if the token represents this type of node, false if not
    */
   public static function isa($token)
@@ -228,8 +227,8 @@ class SassPropertyNode extends SassNode
 
   /**
    * Returns the matches for this type of node.
-   * @param array the line to match
-   * @param string the property syntax being used
+   * @param object $token
+   * @param string $syntax the property syntax being used
    * @return array matches
    */
   public static function match($token, $syntax)
@@ -262,7 +261,7 @@ class SassPropertyNode extends SassNode
    * It will also match interpolation to allow for constructs such as
    * content:#{$pos}
    * @see isa()
-   * @param string the string to test
+   * @param string $string the string to test
    * @return bool true if the string starts with a pseudo selector, false if not
    */
   public static function isPseudoSelector($string)

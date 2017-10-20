@@ -20,7 +20,7 @@ class SassElseNode extends SassIfNode
 {
   /**
    * SassElseNode constructor.
-   * @param object source token
+   * @param object $token source token
    * @return SassElseNode
    */
   public function __construct($token)

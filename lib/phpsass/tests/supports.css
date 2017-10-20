@@ -1,0 +1,9 @@
+.foo {
+  width: 300px; }
+@supports (background-blend-mode: multiply) {
+  .foo {
+    background-blend-mode: multiply; } }
+
+@supports (background-blend-mode: multiply) {
+  .bar {
+    background-blend-mode: multiply; } }

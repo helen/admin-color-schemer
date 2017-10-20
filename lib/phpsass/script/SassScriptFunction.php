@@ -34,8 +34,8 @@ class SassScriptFunction
 
   /**
    * SassScriptFunction constructor
-   * @param string name of the function
-   * @param array arguments for the function
+   * @param string $name name of the function
+   * @param array $args arguments for the function
    * @return SassScriptFunction
    */
   public function __construct($name, $args)
@@ -56,7 +56,7 @@ class SassScriptFunction
     }
 
     $token = $input;
-    if (is_null($token))
+    if ($token === null)
       return ' ';
 
     if (!is_object($token))
@@ -74,12 +74,14 @@ class SassScriptFunction
     return '';
   }
 
-  /**
-   * Evaluates the function.
-   * Look for a user defined function first - this allows users to override
-   * pre-defined functions, then try the pre-defined functions.
-   * @return Function the value of this Function
-   */
+	/**
+	 * Evaluates the function.
+	 * Look for a user defined function first - this allows users to override
+	 * pre-defined functions, then try the pre-defined functions.
+	 *
+	 * @throws Exception
+	 * @return object the value of this Function
+	 */
   public function perform()
   {
     self::$context = new SassContext(SassScriptParser::$context);
@@ -134,7 +136,7 @@ class SassScriptFunction
 
     foreach ($this->args as $i => $arg) {
       if (is_object($arg) && isset($arg->quote)) {
-        $args[$i] = $arg->toString();
+        $args[$i] = (string)$arg;
       }
       if (!is_numeric($i) && SassScriptParser::$context->hasVariable($i)) {
         $args[$i] = SassScriptParser::$context->getVariable($i);
@@ -147,14 +149,15 @@ class SassScriptFunction
 
   /**
    * Imports files in the specified directory.
-   * @param string path to directory to import
+   * @param string $dir path to directory to import
    * @return array filenames imported
    */
   private function import($dir)
   {
     $files = array();
 
-    foreach (array_slice(scandir($dir), 2) as $file) {
+    foreach (scandir($dir) as $file) {
+      if (($file === '.') || ($file === '..')) continue;
       if (is_file($dir . DIRECTORY_SEPARATOR . $file)) {
         $files[] = $file;
         require_once($dir . DIRECTORY_SEPARATOR . $file);
@@ -167,7 +170,7 @@ class SassScriptFunction
   /**
    * Returns a value indicating if a token of this type can be matched at
    * the start of the subject string.
-   * @param string the subject string
+   * @param string $subject the subject string
    * @return mixed match at the start of the string or false if no match
    */
   public static function isa($subject)

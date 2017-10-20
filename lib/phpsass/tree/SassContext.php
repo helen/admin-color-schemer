@@ -40,7 +40,7 @@ class SassContext
   public $variables = array();
 
   /**
-   * @var tree representing any contextual content.
+   * @var array tree representing any contextual content.
    */
   public $content = array();
 
@@ -75,7 +75,8 @@ class SassContext
 
   /**
    * Adds a mixin
-   * @param string name of mixin
+   * @param string $name name of mixin
+   * @param mixed $mixin
    * @return SassMixinDefinitionNode the mixin
    */
   public function addMixin($name, $mixin)
@@ -87,7 +88,7 @@ class SassContext
 
   /**
    * Returns a mixin
-   * @param string name of mixin to return
+   * @param string $name name of mixin to return
    * @return SassMixinDefinitionNode the mixin
    * @throws SassContextException if mixin not defined in this context
    */
@@ -103,14 +104,15 @@ class SassContext
 
   /**
    * Adds a function
-   * @param string name of function
+   * @param string $name name of function
+   * @param mixed $function
    * @return SassFunctionDefinitionNode the function
    */
   public function addFunction($name, $function)
   {
     $this->functions[$name] = $function;
     if (!empty($this->parent)) {
-      $this->parent->addFunction($name);
+      $this->parent->addFunction($name, $function);
     }
 
     return $this;
@@ -118,7 +120,7 @@ class SassContext
 
   /**
    * Returns a function
-   * @param string name of function to return
+   * @param string $name name of function to return
    * @return SassFunctionDefinitionNode the mixin
    * @throws SassContextException if function not defined in this context
    */
@@ -132,7 +134,7 @@ class SassContext
 
   /**
    * Returns a boolean wether this function exists
-   * @param string name of function to check for
+   * @param string $name name of function to check for
    * @return boolean
    */
   public function hasFunction($name)
@@ -148,7 +150,7 @@ class SassContext
 
   /**
    * Returns a variable defined in this context
-   * @param string name of variable to return
+   * @param string $name name of variable to return
    * @return string the variable
    * @throws SassContextException if variable not defined in this context
    */
@@ -168,7 +170,7 @@ class SassContext
 
   /**
    * Returns a value indicating if the variable exists in this context
-   * @param string name of variable to test
+   * @param string $name name of variable to test
    * @return boolean true if the variable exists in this context, false if not
    */
   public function hasVariable($name)
@@ -180,8 +182,9 @@ class SassContext
 
   /**
    * Sets a variable to the given value
-   * @param string name of variable
-   * @param sassLiteral value of variable
+   * @param string $name name of variable
+   * @param sassLiteral $value value of variable
+   * @return SassContext
    */
   public function setVariable($name, $value)
   {

@@ -38,7 +38,7 @@ class SassCompressedRenderer extends SassRenderer
 
   /**
    * Returns the indent string for the node
-   * @param SassNode the node to return the indent string for
+   * @param SassNode $node the node to return the indent string for
    * @return string the indent string for this SassNode
    */
   protected function getIndent($node)
@@ -48,7 +48,7 @@ class SassCompressedRenderer extends SassRenderer
 
   /**
    * Renders a comment.
-   * @param SassNode the node being rendered
+   * @param SassNode $node the node being rendered
    * @return string the rendered comment
    */
   public function renderComment($node)
@@ -58,8 +58,8 @@ class SassCompressedRenderer extends SassRenderer
 
   /**
    * Renders a directive.
-   * @param SassNode the node being rendered
-   * @param array properties of the directive
+   * @param SassNode $node the node being rendered
+   * @param array $properties properties of the directive
    * @return string the rendered directive
    */
   public function renderDirective($node, $properties)
@@ -69,8 +69,8 @@ class SassCompressedRenderer extends SassRenderer
 
   /**
    * Renders properties.
-   * @param SassNode the node being rendered
-   * @param array properties to render
+   * @param SassNode $node the node being rendered
+   * @param array $properties properties to render
    * @return string the rendered properties
    */
   public function renderProperties($node, $properties)
@@ -80,7 +80,7 @@ class SassCompressedRenderer extends SassRenderer
 
   /**
    * Renders a property.
-   * @param SassNode the node being rendered
+   * @param SassNode $node the node being rendered
    * @return string the rendered property
    */
   public function renderProperty($node)
@@ -92,9 +92,9 @@ class SassCompressedRenderer extends SassRenderer
 
   /**
    * Renders a rule.
-   * @param SassNode the node being rendered
-   * @param array rule properties
-   * @param string rendered rules
+   * @param SassNode $node the node being rendered
+   * @param array $properties rule properties
+   * @param string $rules rendered rules
    * @return string the rendered directive
    */
   public function renderRule($node, $properties, $rules)
@@ -107,7 +107,7 @@ class SassCompressedRenderer extends SassRenderer
 
   /**
    * Renders the rule's selectors
-   * @param SassNode the node being rendered
+   * @param SassNode $node the node being rendered
    * @return string the rendered selectors
    */
   protected function renderSelectors($node)

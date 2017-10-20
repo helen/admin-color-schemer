@@ -22,7 +22,8 @@ class SassList extends SassLiteral
 
   /**
    * SassBoolean constructor
-   * @param string value of the boolean type
+   * @param string $value value of the boolean type
+   * @param string $separator
    * @return SassBoolean
    */
   public function __construct($value, $separator = 'auto')
@@ -131,7 +132,7 @@ class SassList extends SassLiteral
   /**
    * Returns a value indicating if a token of this type can be matched at
    * the start of the subject string.
-   * @param string the subject string
+   * @param string $subject the subject string
    * @return mixed match at the start of the string or false if no match
    */
   public static function isa($subject)
@@ -188,7 +189,8 @@ class SassList extends SassLiteral
     $braces = 0;
     $quotes = false;
     $stack = '';
-    for ($i = 0; $i < strlen($list); $i++) {
+	$listCount = strlen($list);
+    for ($i = 0; $i < $listCount; $i++) {
       $char = substr($list, $i, 1);
       switch ($char) {
         case '"':
@@ -228,8 +230,7 @@ class SassList extends SassLiteral
     }
 
     foreach ($out as $k => $v) {
-      $v = trim($v, ', ');
-      $out[$k] = $v;
+      $out[$k] = trim($v, ', ');
     }
 
     return $out;

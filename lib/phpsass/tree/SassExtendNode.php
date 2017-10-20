@@ -28,7 +28,7 @@ class SassExtendNode extends SassNode
 
   /**
    * SassExtendNode.
-   * @param object source token
+   * @param object $token source token
    * @return SassExtendNode
    */
   public function __construct($token)
