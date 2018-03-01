@@ -1,7 +1,0 @@
-@mixin webfont($fontname){
-  @font-face{
-    font-family: $fontname;
-  }
-}
-@include webfont('first-fontname');
-@include webfont('second-fontname');
