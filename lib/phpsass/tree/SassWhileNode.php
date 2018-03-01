@@ -33,7 +33,7 @@ class SassWhileNode extends SassNode
 
   /**
    * SassWhileNode constructor.
-   * @param object source token
+   * @param object $token source token
    * @return SassWhileNode
    */
   public function __construct($token)
@@ -46,7 +46,7 @@ class SassWhileNode extends SassNode
 
   /**
    * Parse this node.
-   * @param SassContext the context in which this node is parsed
+   * @param SassContext $context the context in which this node is parsed
    * @return array the parsed child nodes
    */
   public function parse($context)

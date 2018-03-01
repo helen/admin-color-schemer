@@ -39,7 +39,7 @@ abstract class SassLiteral
 
   /**
    * class constructor
-   * @param string value of the literal type
+   * @param string $value value of the literal type
    * @return SassLiteral
    */
   public function __construct($value = null, $context)
@@ -50,7 +50,7 @@ abstract class SassLiteral
 
   /**
    * Getter.
-   * @param string name of property to get
+   * @param string $name name of property to get
    * @return mixed return value of getter function
    */
   public function __get($name)
@@ -102,7 +102,7 @@ abstract class SassLiteral
 
   /**
    * Adds a child object to this.
-   * @param sassLiteral the child object
+   * @param sassLiteral $sassLiteral the child object
    */
   public function addChild($sassLiteral)
   {
@@ -111,7 +111,7 @@ abstract class SassLiteral
 
   /**
    * SassScript '+' operation.
-   * @param sassLiteral value to add
+   * @param sassLiteral $other value to add
    * @return sassString the string values of this and other with no seperation
    */
   public function op_plus($other)
@@ -121,7 +121,7 @@ abstract class SassLiteral
 
   /**
    * SassScript '-' operation.
-   * @param SassLiteral value to subtract
+   * @param SassLiteral $other value to subtract
    * @return sassString the string values of this and other seperated by '-'
    */
   public function op_minus($other)
@@ -131,7 +131,7 @@ abstract class SassLiteral
 
   /**
    * SassScript '*' operation.
-   * @param SassLiteral value to multiply by
+   * @param SassLiteral $other value to multiply by
    * @return sassString the string values of this and other seperated by '*'
    */
   public function op_times($other)
@@ -141,7 +141,7 @@ abstract class SassLiteral
 
   /**
    * SassScript '/' operation.
-   * @param SassLiteral value to divide by
+   * @param SassLiteral $other value to divide by
    * @return sassString the string values of this and other seperated by '/'
    */
   public function op_div($other)
@@ -151,7 +151,7 @@ abstract class SassLiteral
 
   /**
    * SassScript '%' operation.
-   * @param SassLiteral value to take the modulus of
+   * @param SassLiteral $other value to take the modulus of
    * @return SassLiteral result
    * @throws Exception if modulo not supported for the data type
    */
@@ -162,7 +162,7 @@ abstract class SassLiteral
 
   /**
    * Bitwise AND the value of other and this value
-   * @param string value to bitwise AND with
+   * @param string $other value to bitwise AND with
    * @return string result
    * @throws Exception if bitwise AND not supported for the data type
    */
@@ -173,7 +173,7 @@ abstract class SassLiteral
 
   /**
    * Bitwise OR the value of other and this value
-   * @param SassNumber value to bitwise OR with
+   * @param SassNumber $other value to bitwise OR with
    * @return string result
    * @throws Exception if bitwise OR not supported for the data type
    */
@@ -184,7 +184,7 @@ abstract class SassLiteral
 
   /**
    * Bitwise XOR the value of other and the value of this
-   * @param SassNumber value to bitwise XOR with
+   * @param SassNumber $other value to bitwise XOR with
    * @return string result
    * @throws Exception if bitwise XOR not supported for the data type
    */
@@ -195,7 +195,6 @@ abstract class SassLiteral
 
   /**
    * Bitwise NOT the value of other and the value of this
-   * @param SassNumber value to bitwise NOT with
    * @return string result
    * @throws Exception if bitwise NOT not supported for the data type
    */
@@ -206,7 +205,7 @@ abstract class SassLiteral
 
   /**
    * Shifts the value of this left by the number of bits given in value
-   * @param SassNumber amount to shift left by
+   * @param SassNumber $other amount to shift left by
    * @return string result
    * @throws Exception if bitwise Shift Left not supported for the data type
    */
@@ -217,7 +216,7 @@ abstract class SassLiteral
 
   /**
    * Shifts the value of this right by the number of bits given in value
-   * @param SassNumber amount to shift right by
+   * @param SassNumber $other amount to shift right by
    * @return string result
    * @throws Exception if bitwise Shift Right not supported for the data type
    */
@@ -228,7 +227,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript and operation.
-   * @param sassLiteral the value to and with this
+   * @param sassLiteral $other the value to and with this
    * @return SassLiteral other if this is boolean true, this if false
    */
   public function op_and($other)
@@ -238,7 +237,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript or operation.
-   * @param sassLiteral the value to or with this
+   * @param sassLiteral $other the value to or with this
    * @return SassLiteral this if this is boolean true, other if false
    */
   public function op_or($other)
@@ -253,7 +252,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript xor operation.
-   * @param sassLiteral the value to xor with this
+   * @param sassLiteral $other the value to xor with this
    * @return SassBoolean SassBoolean object with the value true if this or
    * other, but not both, are true, false if not
    */
@@ -274,7 +273,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript > operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if the values
    * of this is greater than the value of other, false if it is not
    */
@@ -285,7 +284,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript >= operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if the values
    * of this is greater than or equal to the value of other, false if it is not
    */
@@ -296,7 +295,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript < operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if the values
    * of this is less than the value of other, false if it is not
    */
@@ -307,7 +306,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript <= operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if the values
    * of this is less than or equal to the value of other, false if it is not
    */
@@ -318,7 +317,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript == operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if this and
    * other are equal, false if they are not
    */
@@ -329,7 +328,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript != operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if this and
    * other are not equal, false if they are
    */
@@ -340,7 +339,7 @@ abstract class SassLiteral
 
   /**
    * The SassScript default operation (e.g. $a $b, "foo" "bar").
-   * @param sassLiteral the value to concatenate with a space to this
+   * @param sassLiteral $other the value to concatenate with a space to this
    * @return sassString the string values of this and other seperated by " "
    */
   public function op_concat($other)
@@ -350,7 +349,7 @@ abstract class SassLiteral
 
   /**
    * SassScript ',' operation.
-   * @param sassLiteral the value to concatenate with a comma to this
+   * @param sassLiteral $other the value to concatenate with a comma to this
    * @return sassString the string values of this and other seperated by ","
    */
   public function op_comma($other)
@@ -360,8 +359,8 @@ abstract class SassLiteral
 
   /**
    * Asserts that the literal is the expected type
-   * @param SassLiteral the literal to test
-   * @param string expected type
+   * @param SassLiteral $other the literal to test
+   * @param string $type expected type
    * @throws SassScriptFunctionException if value is not the expected type
    */
   public static function assertType($literal, $type)
@@ -373,10 +372,10 @@ abstract class SassLiteral
 
   /**
    * Asserts that the value of a literal is within the expected range
-   * @param SassLiteral the literal to test
-   * @param float the minimum value
-   * @param float the maximum value
-   * @param string the units.
+   * @param SassLiteral $literal the literal to test
+   * @param float $min the minimum value
+   * @param float $max the maximum value
+   * @param string $units the units.
    * @throws SassScriptFunctionException if value is not the expected type
    */
    public static function assertInRange($literal, $min, $max, $units = '')
@@ -400,7 +399,7 @@ abstract class SassLiteral
   /**
    * Returns a value indicating if a token of this type can be matched at
    * the start of the subject string.
-   * @param string the subject string
+   * @param string $subject the subject string
    * @return mixed match at the start of the string or false if no match
    */
   public static function isa($subject)

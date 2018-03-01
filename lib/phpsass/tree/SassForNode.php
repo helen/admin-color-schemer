@@ -60,7 +60,7 @@ class SassForNode extends SassNode
 
   /**
    * SassForNode constructor.
-   * @param object source token
+   * @param object $token source token
    * @return SassForNode
    */
   public function __construct($token)
@@ -78,7 +78,7 @@ class SassForNode extends SassNode
 
   /**
    * Parse this node.
-   * @param SassContext the context in which this node is parsed
+   * @param SassContext $context the context in which this node is parsed
    * @return array parsed child nodes
    */
   public function parse($context)

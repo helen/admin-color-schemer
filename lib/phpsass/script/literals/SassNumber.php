@@ -236,7 +236,7 @@ class SassNumber extends SassLiteral
 
   /**
    * The SassScript > operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if the values
    * of this is greater than the value of other, false if it is not
    */
@@ -251,7 +251,7 @@ class SassNumber extends SassLiteral
 
   /**
    * The SassScript >= operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if the values
    * of this is greater than or equal to the value of other, false if it is not
    */
@@ -266,7 +266,7 @@ class SassNumber extends SassLiteral
 
   /**
    * The SassScript < operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if the values
    * of this is less than the value of other, false if it is not
    */
@@ -281,7 +281,7 @@ class SassNumber extends SassLiteral
 
   /**
    * The SassScript <= operation.
-   * @param sassLiteral the value to compare to this
+   * @param sassLiteral $other the value to compare to this
    * @return SassBoolean SassBoolean object with the value true if the values
    * of this is less than or equal to the value of other, false if it is not
    */
@@ -296,7 +296,7 @@ class SassNumber extends SassLiteral
 
   /**
    * Takes the modulus (remainder) of this value divided by the value of other
-   * @param string value to divide by
+   * @param string $other value to divide by
    * @return mixed SassNumber if other is a SassNumber or
    * SassColour if it is a SassColour
    */
@@ -314,7 +314,7 @@ class SassNumber extends SassLiteral
    * Converts values and units.
    * If this is a unitless numeber it will take the units of other; if not
    * other is coerced to the units of this.
-   * @param SassNumber the other number
+   * @param SassNumber $other the other number
    * @return SassNumber the other number with its value and units coerced if neccessary
    * @throws SassNumberException if the units are incompatible
    */
@@ -351,8 +351,8 @@ class SassNumber extends SassLiteral
 
   /**
    * Calculates the corecion factor to apply to the value
-   * @param array units being converted from
-   * @param array units being converted to
+   * @param array $fromUnits units being converted from
+   * @param array $toUnits units being converted to
    * @return float the coercion factor to apply
    */
   private function coercionFactor($fromUnits, $toUnits)
@@ -371,6 +371,33 @@ class SassNumber extends SassLiteral
 
     $coercionFactor = 1;
     foreach ($fromUnits as $i=>$from) {
+      if (!isset($toUnits[$i])) {
+        //workaround for php changes introduced in 5.4, 5.5, 5.6, in php 5.3 the following condition and assignment was not necessary
+       if (isset($toUnits[$i+1])) {
+         $toUnits[$i] = $toUnits[$i+1];
+       }
+      }
+/********************* Debug code for those that may want to figure out why this is different in 5.3 vs the others 5.4, 5.5, 5.6
+      print (" <br> ");
+      print ("ROW1 i: ");
+      print_r($i);
+      print (" : count(fromUnits): " . count($fromUnits) . ":=fromUnits count " );
+      print (" ");
+      print (" <br> ");
+      print ("ROW2 from: ");
+      print (print_r($from));
+      print (" ");
+      print (" <br> ");
+      print ("ROW3 : ");
+      print_r($toUnits); 
+      print (" :(toUnits)");
+      print_r($toUnits[$i]);
+      print (" :(toUnits[i]) ");
+      print_r(self::$unitConversion[$from]);
+      print (" :self::unitConversion[$from]");
+      print (" ");
+      print (" <br> ");
+********************* Debug code for those that may want to figure out why this is different in 5.3 vs the others 5.4, 5.5, 5.6 *******/
       if (array_key_exists($i, $toUnits) && array_key_exists($toUnits[$i], self::$unitConversion)) {
         $coercionFactor *= self::$unitConversion[$toUnits[$i]] / self::$unitConversion[$from];
       } else {
@@ -383,7 +410,7 @@ class SassNumber extends SassLiteral
 
   /**
    * Returns a value indicating if all the units are capable of being converted
-   * @param array units to test
+   * @param array $units units to test
    * @return boolean true if all units can be converted, false if not
    */
   private function areConvertable($units)
@@ -402,8 +429,8 @@ class SassNumber extends SassLiteral
    * Removes common units from each set.
    * We don't use array_diff because we want (for eaxmple) mm*mm/mm*cm to
    * end up as mm/cm.
-   * @param array first set of units
-   * @param array second set of units
+   * @param array $u1 first set of units
+   * @param array $u2 second set of units
    * @return array both sets of units with common units removed
    */
   private function removeCommonUnits($u1, $u2)
@@ -563,7 +590,7 @@ class SassNumber extends SassLiteral
   /**
    * Returns a value indicating if a token of this type can be matched at
    * the start of the subject string.
-   * @param string the subject string
+   * @param string $subject the subject string
    * @return mixed match at the start of the string or false if no match
    */
   public static function isa($subject)

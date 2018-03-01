@@ -33,7 +33,7 @@ class SassNestedRenderer extends SassExpandedRenderer
 
   /**
    * Returns the indent string for the node
-   * @param SassNode the node being rendered
+   * @param SassNode $node the node being rendered
    * @return string the indent string for this SassNode
    */
   protected function getIndent($node)
@@ -43,8 +43,8 @@ class SassNestedRenderer extends SassExpandedRenderer
 
   /**
    * Renders a directive.
-   * @param SassNode the node being rendered
-   * @param array properties of the directive
+   * @param SassNode $node the node being rendered
+   * @param array $properties properties of the directive
    * @return string the rendered directive
    */
   public function renderDirective($node, $properties)
@@ -56,7 +56,7 @@ class SassNestedRenderer extends SassExpandedRenderer
 
   /**
    * Renders rule selectors.
-   * @param SassNode the node being rendered
+   * @param SassNode $node the node being rendered
    * @return string the rendered selectors
    */
   protected function renderSelectors($node)
