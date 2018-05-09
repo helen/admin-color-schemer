@@ -5,11 +5,18 @@ defined( 'WPINC' ) or die;
 	<h2><?php echo esc_html( $GLOBALS['title'] ); ?></h2>
 
 	<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>" class="color-schemer-pickers postbox">
+
 		<input type="hidden" name="action" value="admin-color-schemer-save" />
-		<?php wp_nonce_field( self::NONCE ); ?>
+		<?php
+		wp_nonce_field( self::NONCE );
+		$admin_schemer = Admin_Color_Schemer_Plugin::get_instance();
+		$scheme_label = $admin_schemer->get_scheme_input(); ?>
 		<table class="form-table">
+			<tr valign="top">
+				<th scope="row"><label for="<?php echo esc_attr( $scheme_label['attribute'] ); ?>"><?php echo esc_html( $scheme_label['label'] ); ?></label></th>
+				<td><input id="<?php echo esc_attr( $scheme_label['attribute'] ); ?>" name="<?php echo esc_attr( $scheme_label['attribute'] ); ?>" type="text" value="<?php echo esc_attr( $scheme->name ) ?>"></td>
+			</tr>
 			<?php
-			$admin_schemer = Admin_Color_Schemer_Plugin::get_instance();
 			$loops = $admin_schemer->get_colors( 'basic' );
 			foreach ( $loops as $handle => $nicename ): ?>
 
