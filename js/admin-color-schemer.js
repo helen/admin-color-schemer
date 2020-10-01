@@ -24,6 +24,10 @@
 				if ( typeof r.errors != 'undefined' ) {
 					$('h2').after( '<div class="error"><p>' + r.message + '</p></div>' );
 				} else if ( typeof r.uri != 'undefined' ) {
+					if( ! $('#colors-css').length ) {
+						$('head').append("<link rel='stylesheet' id='colors-css' href='' media='all' />");
+					}
+
 					$('#colors-css').attr('href', r.uri);
 					$('h2').after( '<div class="update-nag">' + r.message + '</div>' );
 				}
