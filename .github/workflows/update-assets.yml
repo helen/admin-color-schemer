@@ -12,8 +12,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Transform Plugin Readme
       run: |
-        cp ${{github.workspace}}/README.md ${{github.workspace}}/readme.txt
-        sed -i '' -e 's/^# \(.*\)$/=== \1 ===/' -e 's/ #* ===$/ ===/' -e 's/^## \(.*\)$/== \1 ==/' -e 's/ #* ==$/ ==/' -e 's/^### \(.*\)$/= \1 =/' -e 's/ #* =$/ =/' ${{github.workspace}}/readme.txt
+        cp ./README.md ./readme.txt
+        sed -i '' -e 's/^# \(.*\)$/=== \1 ===/' -e 's/ #* ===$/ ===/' -e 's/^## \(.*\)$/== \1 ==/' -e 's/ #* ==$/ ==/' -e 's/^### \(.*\)$/= \1 =/' -e 's/ #* =$/ =/' ./readme.txt
     - name: WordPress.org plugin asset/readme update
       uses: 10up/action-wordpress-plugin-asset-update@stable
       env:
