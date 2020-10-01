@@ -333,6 +333,8 @@ class Admin_Color_Schemer_Plugin {
 	public function maybe_copy_core_files( $upload_dir ) {
 		global $wp_filesystem;
 
+		$doing_ajax = defined( 'DOING_AJAX' ) && DOING_AJAX;
+
 		// pull in core's default colors.css and scss files if they're not there already
 		$core_scss = array( '_admin.scss', '_mixins.scss', '_variables.scss' );
 		$admin_dir = ABSPATH . '/wp-admin/css/';

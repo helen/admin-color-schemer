@@ -34,8 +34,8 @@ class SassIfNode extends SassNode
 
   /**
    * SassIfNode constructor.
-   * @param object source token
-   * @param boolean true for an "if" node, false for an "else if | else" node
+   * @param object $token source token
+   * @param boolean $if true for an "if" node, false for an "else if | else" node
    * @return SassIfNode
    */
   public function __construct($token, $if=true)
@@ -57,7 +57,7 @@ class SassIfNode extends SassNode
    */
   public function addElse($node)
   {
-    if (is_null($this->else)) {
+    if ($this->else === null) {
       $node->parent  = $this;
       $node->root    = $this->root;
       $this->else    = $node;
@@ -70,7 +70,7 @@ class SassIfNode extends SassNode
 
   /**
    * Parse this node.
-   * @param SassContext the context in which this node is parsed
+   * @param SassContext $context the context in which this node is parsed
    * @return array parsed child nodes
    */
   public function parse($context)

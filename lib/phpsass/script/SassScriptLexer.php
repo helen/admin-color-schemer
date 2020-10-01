@@ -52,8 +52,8 @@ class SassScriptLexer
 
   /**
    * Lex an expression into SassScript tokens.
-   * @param string expression to lex
-   * @param SassContext the context in which the expression is lexed
+   * @param string $string expression to lex
+   * @param SassContext $context the context in which the expression is lexed
    * @return array tokens
    */
   public function lex($string, $context)
@@ -65,6 +65,7 @@ class SassScriptLexer
     if (is_array($string)) {
       return $string;
     }
+	$tokens = array();
     // whilst the string is not empty, split it into it's tokens.
     while ($string !== false) {
       if (($match = $this->isWhitespace($string)) !== false) {
@@ -84,7 +85,13 @@ class SassScriptLexer
         $tokens[] = new SassNumber($match);
       } elseif (($match = SassString::isa($string)) !== false) {
         $stringed = new SassString($match);
-        if (strlen($stringed->quote) == 0 && SassList::isa($string) !== false) {
+        if (
+          strlen($stringed->quote) == 0 &&
+          SassList::isa($string) !== false &&
+          // recursion loop prevented for expressions
+          // like "transition: -webkit-transform 1s"
+          !preg_match("/^\-\w+\-\w+$/", $stringed->value)
+          ) {
           $tokens[] = new SassList($string);
         } else {
           $tokens[] = $stringed;
@@ -111,6 +118,9 @@ class SassScriptLexer
         $tokens[] = new SassString($match);
       }
       $string = substr($string, strlen($match));
+      if ($string === '') {
+        $string = false;
+      }
     }
 
     return $tokens;
@@ -119,7 +129,7 @@ class SassScriptLexer
   /**
    * Returns a value indicating if a token of this type can be matched at
    * the start of the subject string.
-   * @param string the subject string
+   * @param string $subject the subject string
    * @return mixed match at the start of the string or false if no match
    */
   public function isWhitespace($subject)

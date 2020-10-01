@@ -53,8 +53,8 @@ class SassScriptParser
 
   /**
    * Replace interpolated SassScript contained in '#{}' with the parsed value.
-   * @param string the text to interpolate
-   * @param SassContext the context in which the string is interpolated
+   * @param string $string the text to interpolate
+   * @param SassContext $context the context in which the string is interpolated
    * @return string the interpolated text
    */
   public function interpolate($string, $context)
@@ -85,9 +85,9 @@ class SassScriptParser
 
   /**
    * Evaluate a SassScript.
-   * @param string expression to parse
-   * @param SassContext the context in which the expression is evaluated
-   * @param  integer the environment in which the expression is evaluated
+   * @param string $expression expression to parse
+   * @param SassContext $context the context in which the expression is evaluated
+   * @param  integer $environment the environment in which the expression is evaluated
    * @return SassLiteral parsed value
    */
   public function evaluate($expression, $context, $environment = self::DEFAULT_ENV)
@@ -122,9 +122,9 @@ class SassScriptParser
   /**
    * Parse SassScript to a set of tokens in RPN
    * using the Shunting Yard Algorithm.
-   * @param string expression to parse
-   * @param SassContext the context in which the expression is parsed
-   * @param  integer the environment in which the expression is parsed
+   * @param string $expression expression to parse
+   * @param SassContext $context the context in which the expression is parsed
+   * @param  integer $environment the environment in which the expression is parsed
    * @return array tokens in RPN
    */
   public function parse($expression, $context, $environment=self::DEFAULT_ENV)
@@ -183,7 +183,6 @@ class SassScriptParser
           if ($c <= 0) {
             array_push($outputQueue, new SassString(')'));
             break;
-            throw new SassScriptParserException('Unmatched parentheses', $context->node);
           }
         }
         // the token is an operator, o1, so:

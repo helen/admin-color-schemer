@@ -40,7 +40,7 @@ class SassEachNode extends SassNode
 
   /**
    * SassEachNode constructor.
-   * @param object source token
+   * @param object $token source token
    * @return SassEachNode
    */
   public function __construct($token)
@@ -56,7 +56,7 @@ class SassEachNode extends SassNode
 
   /**
    * Parse this node.
-   * @param SassContext the context in which this node is parsed
+   * @param SassContext $context the context in which this node is parsed
    * @return array parsed child nodes
    */
   public function parse($context)

@@ -63,7 +63,7 @@ class SassString extends SassLiteral
   /**
    * String multiplication.
    * this is repeated other times
-   * @param sassNumber the number of times to repeat this
+   * @param sassNumber $other the number of times to repeat this
    * @return sassString the string result
    */
   public function op_times($other)

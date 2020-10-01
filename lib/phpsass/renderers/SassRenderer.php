@@ -9,10 +9,10 @@
  * @subpackage  Sass.renderers
  */
 
-require_once 'SassCompactRenderer.php';
-require_once 'SassCompressedRenderer.php';
-require_once 'SassExpandedRenderer.php';
-require_once 'SassNestedRenderer.php';
+#require_once 'SassCompactRenderer.php';
+#require_once 'SassCompressedRenderer.php';
+#require_once 'SassExpandedRenderer.php';
+#require_once 'SassNestedRenderer.php';
 
 /**
  * SassRenderer class.
@@ -34,7 +34,7 @@ class SassRenderer
 
   /**
    * Returns the renderer for the required render style.
-   * @param string render style
+   * @param string $style render style
    * @return SassRenderer
    */
   public static function getRenderer($style)

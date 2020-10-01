@@ -42,7 +42,8 @@ class SassVariableNode extends SassNode
 
   /**
    * SassVariableNode constructor.
-   * @param object source token
+   * @param object $token source token
+   * @throws SassVariableNodeException
    * @return SassVariableNode
    */
   public function __construct($token)
@@ -69,7 +70,7 @@ class SassVariableNode extends SassNode
   /**
    * Parse this node.
    * Sets the variable in the current context.
-   * @param SassContext the context in which this node is parsed
+   * @param SassContext $context the context in which this node is parsed
    * @return array the parsed node - an empty array
    */
   public function parse($context)
@@ -86,7 +87,7 @@ class SassVariableNode extends SassNode
 
   /**
    * Returns a value indicating if the token represents this type of node.
-   * @param object token
+   * @param object $token token
    * @return boolean true if the token represents this type of node, false if not
    */
   public static function isa($token)
