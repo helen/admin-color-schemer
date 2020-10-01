@@ -24,6 +24,7 @@
 				if ( typeof r.errors != 'undefined' ) {
 					$('h2').after( '<div class="error"><p>' + r.message + '</p></div>' );
 				} else if ( typeof r.uri != 'undefined' ) {
+					// Default admin color scheme doesn't have a #colors-css link to hot load into so let's make one if we need to
 					if( ! $('#colors-css').length ) {
 						$('head').append("<link rel='stylesheet' id='colors-css' href='' media='all' />");
 					}
