@@ -35,5 +35,8 @@ This means that your uploads folder requires credentials in order to save the th
 
 ## Changelog ##
 
+### 1.1 ###
+* Updated phpsass library to fix PHP 7 bug
+
 ### 1.0 ###
 * Initial release
