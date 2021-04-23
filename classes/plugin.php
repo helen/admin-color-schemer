@@ -9,6 +9,13 @@ class Admin_Color_Schemer_Plugin {
 
 	private $colors;
 
+	/**
+	 * The data needed for the input text form.
+	 *
+	 * @var array
+	 */
+	private $scheme_name_input;
+
 	protected function __construct() {
 		self::$instance = $this;
 		$this->base = dirname( dirname( __FILE__ ) );
@@ -26,6 +33,12 @@ class Admin_Color_Schemer_Plugin {
 	public function init() {
 		// Initialize translations
 		load_plugin_textdomain( 'admin-color-schemer', false, basename( dirname( dirname( __FILE__ ) ) ) . '/languages' );
+
+		// Set up the label name for the scheme name input form
+		$this->scheme_name_input = array(
+			'label' => __( 'Your Scheme name', 'admin-color-schemer' ),
+			'attribute'    => 'scheme_name',
+		);
 
 		// Set up color arrays - need translations
 		$this->colors['basic'] = array(
@@ -159,6 +172,15 @@ class Admin_Color_Schemer_Plugin {
 		} else {
 			return new Admin_Color_Schemer_Scheme();
 		}
+	}
+
+	/**
+	 * Gets the input data necessary for the text input form.
+	 *
+	 * @return mixed|array
+	 */
+	public function get_scheme_input() {
+		return $this->scheme_name_input;
 	}
 
 	public function get_colors( $set = null ) {
@@ -319,6 +341,13 @@ class Admin_Color_Schemer_Plugin {
 
 			echo json_encode( $response );
 			die();
+		}
+
+		//add the scheme name to the settings array
+		$scheme->name = $_post[$this->scheme_name_input['attribute']];
+
+		if ( empty ( $scheme->name) ) {
+			$scheme->name = 'Custom';
 		}
 
 		$this->set_option( 'schemes', array( $scheme->id => $scheme->to_array() ) );
