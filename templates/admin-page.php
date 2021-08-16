@@ -37,7 +37,7 @@ defined( 'WPINC' ) or die;
 
 		</table>
 
-		<p class="show-advanced"><a href="#" class="hide-if-no-js">Show advanced options</a></p>
+		<p class="show-advanced"><a href="#" class="hide-if-no-js"><?php esc_html_e( 'Show advanced options', 'admin-color-schemer' ); ?></a></p>
 
 		<p>
 			<?php submit_button( __('Save and Use', 'admin-color-schemer' ), 'primary', 'submit', false ); ?>
