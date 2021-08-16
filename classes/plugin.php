@@ -89,7 +89,7 @@ class Admin_Color_Schemer_Plugin {
 	}
 
 	public function admin_menu() {
-		$hook = add_management_page( 'Admin Color Schemer', 'Admin Colors', 'manage_options', 'admin-color-schemer', array( $this, 'admin_page' ) );
+		$hook = add_management_page( 'Admin Color Schemer', __( 'Admin Colors', 'admin-color-schemer' ), 'manage_options', 'admin-color-schemer', array( $this, 'admin_page' ) );
 		add_action( 'load-' . $hook, array( $this, 'load' ) );
 	}
 
